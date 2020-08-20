@@ -18,34 +18,27 @@ const mapStateToProps= state=>{
 const mapDispatchToProps=(dispatch)=>{
     return{
     onSearchChange:(event)=>dispatch(setSearchField(event.target.value)),
-    onRequestRobots:()=>requestRobots(dispatch)
+    onRequestRobots:()=>dispatch(requestRobots())
     }
 }
 
 
 class App extends Component {
-    constructor(){
-        super()
-        this.state={
-            robots:[]     
-        }
-    }
+    
     componentDidMount(){
         
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(response=>response.json())
-            .then(users=>this.setState({robots:users}));
+        this.props.onRequestRobots()
         
     }
     
     render() {
-        const {robots}=this.state;
-        const {searchField,onSearchChange}=this.props;
+        
+        const {searchField,onSearchChange,robots,isPending}=this.props;
         const filteredRobots=robots.filter(robot=>{
             
             return robot.name.toLowerCase().includes(searchField.toLowerCase());
         });
-        return !robots.length ?
+        return isPending ?
             <h1>loading</h1>:
         
             (
